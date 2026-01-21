@@ -60,3 +60,4 @@ capacitor.plugins.json
 /android/.cxx
 *.jks
 key.properties
+keystore.properties
