@@ -121,7 +121,7 @@ import { LPGStation } from '../../types';
   `
 })
 export class StationDetailComponent implements OnInit {
-  route = inject(ActivatedRoute);
+  route: ActivatedRoute = inject(ActivatedRoute);
   stationService = inject(StationService);
   station = signal<LPGStation | undefined>(undefined);
 

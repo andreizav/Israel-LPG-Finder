@@ -123,10 +123,10 @@ import L from 'leaflet';
   `]
 })
 export class StationFormComponent implements OnInit, AfterViewInit, OnDestroy {
-  private fb = inject(FormBuilder);
+  private fb: FormBuilder = inject(FormBuilder);
   stationService = inject(StationService);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
+  private router: Router = inject(Router);
+  private route: ActivatedRoute = inject(ActivatedRoute);
 
   @ViewChild('mapContainer') mapContainer!: ElementRef;
   
