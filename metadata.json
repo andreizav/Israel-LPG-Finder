@@ -1,0 +1,7 @@
+{
+  "name": "Israel LPG Finder",
+  "description": "Find LPG (Autogas) stations in Israel, compare prices, and navigate via Waze. Supports Hebrew (RTL) and English.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
