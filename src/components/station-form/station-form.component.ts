@@ -13,9 +13,9 @@ import L from 'leaflet';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="min-h-screen bg-gray-50 pb-safe">
-      <!-- Navbar -->
-      <nav class="sticky top-0 z-20 bg-white border-b border-gray-200 px-4 h-14 flex items-center justify-between shadow-sm">
-        <div class="flex items-center gap-3">
+      <!-- Navbar with Safe Area -->
+      <nav class="sticky top-0 z-20 bg-white border-b border-gray-200 px-4 h-auto pt-safe flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-3 h-14 w-full">
           <button (click)="goBack()" class="p-2 -mr-2 text-gray-600 hover:bg-gray-100 rounded-full">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -26,7 +26,7 @@ import L from 'leaflet';
         <button 
           (click)="save()" 
           [disabled]="form.invalid"
-          class="text-blue-600 font-bold text-sm px-3 py-1 rounded-full hover:bg-blue-50 disabled:opacity-50 disabled:hover:bg-transparent"
+          class="text-blue-600 font-bold text-sm px-3 py-1 rounded-full hover:bg-blue-50 disabled:opacity-50 disabled:hover:bg-transparent whitespace-nowrap"
         >
           שמירה
         </button>

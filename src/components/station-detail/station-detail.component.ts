@@ -11,9 +11,9 @@ import { LPGStation } from '../../types';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="min-h-screen bg-white">
-      <!-- Navbar -->
-      <nav class="sticky top-0 z-20 bg-white border-b border-gray-100 px-4 h-14 flex items-center justify-between">
-        <div class="flex items-center gap-3">
+      <!-- Navbar with Safe Area -->
+      <nav class="sticky top-0 z-20 bg-white border-b border-gray-100 px-4 h-auto pt-safe flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-3 h-14 w-full">
           <a routerLink="/" class="p-2 -mr-2 text-gray-600 hover:bg-gray-50 rounded-full">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -23,7 +23,7 @@ import { LPGStation } from '../../types';
         </div>
         
         @if (station(); as s) {
-          <a [routerLink]="['/edit', s.name]" class="text-blue-600 p-2 text-sm font-bold hover:bg-blue-50 rounded-lg transition-colors flex items-center gap-1">
+          <a [routerLink]="['/edit', s.name]" class="text-blue-600 p-2 text-sm font-bold hover:bg-blue-50 rounded-lg transition-colors flex items-center gap-1 whitespace-nowrap">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
             </svg>
@@ -33,7 +33,7 @@ import { LPGStation } from '../../types';
       </nav>
 
       @if (station(); as s) {
-        <div class="p-6">
+        <div class="p-6 pb-safe">
           <!-- Header Card -->
           <div class="text-center mb-8">
             <div class="w-20 h-20 bg-blue-50 text-blue-600 rounded-full mx-auto flex items-center justify-center text-xl font-bold mb-4 shadow-sm">

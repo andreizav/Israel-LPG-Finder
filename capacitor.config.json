@@ -1,0 +1,6 @@
+{
+  "appId": "com.israellpgfinder.app",
+  "appName": "Israel LPG Finder",
+  "webDir": "dist/browser",
+  "bundledWebRuntime": false
+}

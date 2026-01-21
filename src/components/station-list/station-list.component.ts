@@ -15,9 +15,9 @@ type ViewMode = 'list' | 'map';
   imports: [CommonModule, RouterModule, ReactiveFormsModule, StationMapComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <!-- Header -->
-    <header class="bg-blue-700 text-white p-4 shadow-md sticky top-0 z-10 flex flex-col gap-3">
-      <div class="flex justify-between items-center">
+    <!-- Header with Safe Area Padding -->
+    <header class="bg-blue-700 text-white p-4 pt-safe shadow-md sticky top-0 z-10 flex flex-col gap-3">
+      <div class="flex justify-between items-center mt-2">
         <div>
           <h1 class="text-2xl font-bold">Israel LPG Finder</h1>
           <div class="text-xs text-blue-200 mt-1 font-medium">
@@ -99,7 +99,7 @@ type ViewMode = 'list' | 'map';
     <!-- Content Area -->
     <main class="h-[calc(100vh-220px)] relative">
       @if (viewMode() === 'list') {
-        <div class="p-4 space-y-3 h-full overflow-y-auto pb-20">
+        <div class="p-4 space-y-3 h-full overflow-y-auto pb-safe">
           @if (stationService.filteredStations().length === 0) {
             <div class="text-center py-10 text-gray-500">
               <p class="text-lg">לא נמצאו תחנות תואמות לחיפוש.</p>
@@ -156,7 +156,7 @@ type ViewMode = 'list' | 'map';
       }
 
       <!-- Add Station FAB -->
-      <a routerLink="/add" class="fixed bottom-6 right-4 z-50 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg transition-transform active:scale-90 flex items-center justify-center" title="הוסף תחנה חדשה">
+      <a routerLink="/add" class="fixed bottom-6 right-4 z-50 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg transition-transform active:scale-90 flex items-center justify-center mb-safe" title="הוסף תחנה חדשה">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
         </svg>

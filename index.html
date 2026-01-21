@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <title>Israel LPG Finder</title>
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <!-- Updated viewport with viewport-fit=cover for full-screen mobile experience -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   
   <!-- PWA & Mobile Meta Tags -->
   <link rel="manifest" href="src/manifest.json">
@@ -36,6 +37,13 @@
     ::-webkit-scrollbar-thumb {
       background: #cbd5e1;
       border-radius: 4px;
+    }
+    /* Safe Area Utilities for Mobile Notches/Home Bars */
+    .pb-safe {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .pt-safe {
+      padding-top: env(safe-area-inset-top);
     }
   </style>
 <script type="importmap">
