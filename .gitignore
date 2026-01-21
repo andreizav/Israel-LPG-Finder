@@ -61,3 +61,7 @@ capacitor.plugins.json
 *.jks
 key.properties
 keystore.properties
+
+# Logs and Temporary Build Files
+build_*.txt
+*.log
