@@ -37,7 +37,7 @@ import { StationService } from '../../services/station.service';
 export class StationMapComponent implements AfterViewInit, OnDestroy {
   stations = input.required<LPGStation[]>();
   @ViewChild('mapContainer') mapContainer!: ElementRef;
-  
+
   stationService = inject(StationService);
   private map: L.Map | undefined;
   private markers: L.Marker[] = [];
@@ -88,61 +88,61 @@ export class StationMapComponent implements AfterViewInit, OnDestroy {
     this.map = L.map(this.mapContainer.nativeElement).setView([31.5, 34.8], 8);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      attribution: ''
     }).addTo(this.map);
 
     this.updateMarkers(this.stations());
-    
+
     // Add click handler for user location
     this.map.on('click', (e: L.LeafletMouseEvent) => {
-        this.setUserLocation(e.latlng.lat, e.latlng.lng);
+      this.setUserLocation(e.latlng.lat, e.latlng.lng);
     });
 
     // Try to get initial location quietly
     if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => this.setUserLocation(position.coords.latitude, position.coords.longitude),
-            () => {} // Ignore errors on auto-init
-        );
+      navigator.geolocation.getCurrentPosition(
+        (position) => this.setUserLocation(position.coords.latitude, position.coords.longitude),
+        () => { } // Ignore errors on auto-init
+      );
     }
   }
 
   private setUserLocation(lat: number, lng: number) {
-      if (!this.map) return;
+    if (!this.map) return;
 
-      if (this.userMarker) {
-          this.userMarker.setLatLng([lat, lng]);
-      } else {
-          this.userMarker = L.marker([lat, lng], {
-              icon: this.createUserIcon(),
-              zIndexOffset: 1000 // Ensure it's on top
-          }).addTo(this.map);
-          
-          this.userMarker.bindPopup(`
+    if (this.userMarker) {
+      this.userMarker.setLatLng([lat, lng]);
+    } else {
+      this.userMarker = L.marker([lat, lng], {
+        icon: this.createUserIcon(),
+        zIndexOffset: 1000 // Ensure it's on top
+      }).addTo(this.map);
+
+      this.userMarker.bindPopup(`
             <div class="font-heebo text-center p-1">
               <div class="font-bold text-blue-700">המיקום שלך</div>
               <div class="text-[10px] text-gray-500">לחץ על המפה לשינוי</div>
             </div>
           `);
-      }
+    }
   }
 
   private createUserIcon(): L.DivIcon {
-      // pulsing blue dot
-      const html = `
+    // pulsing blue dot
+    const html = `
         <div class="relative w-6 h-6 flex items-center justify-center">
             <span class="absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-50 animate-ping"></span>
             <span class="relative inline-flex rounded-full h-4 w-4 bg-blue-600 border-2 border-white shadow-md"></span>
         </div>
       `;
-      
-      return L.divIcon({
-          html: html,
-          className: 'bg-transparent border-none', // Override default leaflet divIcon styles
-          iconSize: [24, 24],
-          iconAnchor: [12, 12],
-          popupAnchor: [0, -12]
-      });
+
+    return L.divIcon({
+      html: html,
+      className: 'bg-transparent border-none', // Override default leaflet divIcon styles
+      iconSize: [24, 24],
+      iconAnchor: [12, 12],
+      popupAnchor: [0, -12]
+    });
   }
 
   private updateMarkers(stations: LPGStation[]) {
@@ -215,8 +215,8 @@ export class StationMapComponent implements AfterViewInit, OnDestroy {
         borderColorClass = 'border-t-red-600';
       }
     } else {
-        bgColorClass = 'bg-gray-500';
-        borderColorClass = 'border-t-gray-500';
+      bgColorClass = 'bg-gray-500';
+      borderColorClass = 'border-t-gray-500';
     }
 
     const priceStr = station.price_ils ? station.price_ils.toFixed(2) : '?';
@@ -239,7 +239,7 @@ export class StationMapComponent implements AfterViewInit, OnDestroy {
       popupAnchor: [0, -35]
     });
   }
-  
+
   private getPriceColorClass(price?: number): string {
     if (!price) return 'text-gray-500';
     if (price < 3.50) return 'text-green-600';

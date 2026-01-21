@@ -129,11 +129,11 @@ export class StationFormComponent implements OnInit, AfterViewInit, OnDestroy {
   private route: ActivatedRoute = inject(ActivatedRoute);
 
   @ViewChild('mapContainer') mapContainer!: ElementRef;
-  
+
   form: FormGroup;
   isEditMode = signal(false);
   originalName = '';
-  
+
   private map: L.Map | undefined;
   private marker: L.Marker | undefined;
 
@@ -184,7 +184,7 @@ export class StationFormComponent implements OnInit, AfterViewInit, OnDestroy {
   private initMap() {
     const lat = this.form.get('lat')?.value;
     const lng = this.form.get('lng')?.value;
-    
+
     // Default center (Israel) or Station location
     const center: L.LatLngExpression = lat && lng ? [lat, lng] : [31.5, 34.8];
     const zoom = lat && lng ? 14 : 8;
@@ -192,7 +192,7 @@ export class StationFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.map = L.map(this.mapContainer.nativeElement).setView(center, zoom);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap'
+      attribution: ''
     }).addTo(this.map);
 
     // If editing, place initial marker
@@ -234,11 +234,11 @@ export class StationFormComponent implements OnInit, AfterViewInit, OnDestroy {
         iconAnchor: [16, 32]
       });
 
-      this.marker = L.marker([lat, lng], { 
+      this.marker = L.marker([lat, lng], {
         draggable: true,
-        icon: icon 
+        icon: icon
       }).addTo(this.map);
-      
+
       // Handle drag end
       this.marker.on('dragend', (event) => {
         const marker = event.target;
@@ -253,7 +253,7 @@ export class StationFormComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.form.invalid) return;
 
     const formVal = this.form.value;
-    
+
     const station: LPGStation = {
       name: formVal.name,
       city_he: formVal.city_he,
@@ -278,9 +278,9 @@ export class StationFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   goBack() {
     if (this.isEditMode()) {
-        this.router.navigate(['/station', this.originalName]); // Go back to detail if editing
+      this.router.navigate(['/station', this.originalName]); // Go back to detail if editing
     } else {
-        this.router.navigate(['/']); // Go back to list if adding
+      this.router.navigate(['/']); // Go back to list if adding
     }
   }
 }

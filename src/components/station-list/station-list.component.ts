@@ -98,6 +98,13 @@ type ViewMode = 'list' | 'map';
 
     <!-- Content Area -->
     <main class="h-[calc(100vh-220px)] relative">
+      @if (stationService.isLoading()) {
+        <div class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm">
+          <div class="animate-spin rounded-full h-10 w-10 border-4 border-blue-100 border-t-blue-600 mb-3"></div>
+          <p class="text-blue-800 font-medium animate-pulse">טוען נתונים...</p>
+        </div>
+      }
+
       @if (viewMode() === 'list') {
         <div class="p-4 space-y-3 h-full overflow-y-auto pb-safe">
           @if (stationService.filteredStations().length === 0) {
