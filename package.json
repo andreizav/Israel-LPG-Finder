@@ -6,20 +6,28 @@
   "scripts": {
     "dev": "ng serve",
     "build": "ng build",
-    "preview": "ng serve --configuration=production"
+    "preview": "ng serve --configuration=production",
+    "build:mobile": "ng build && npx cap sync && npx cap open android"
   },
   "dependencies": {
-    "rxjs": "^7.8.2",
-    "@angular/compiler": "^21.1.0",
-    "@angular/platform-browser": "^21.1.0",
-    "@angular/core": "^21.1.0",
-    "@angular/common": "^21.1.0",
-    "@angular/forms": "^21.1.0",
-    "@angular/router": "^21.1.0",
-    "leaflet": "1.9.4",
     "@angular/build": "^21.1.0",
     "@angular/cli": "^21.1.0",
+    "@angular/common": "^21.1.0",
+    "@angular/compiler": "^21.1.0",
     "@angular/compiler-cli": "^21.1.0",
+    "@angular/core": "^21.1.0",
+    "@angular/forms": "^21.1.0",
+    "@angular/platform-browser": "^21.1.0",
+    "@angular/router": "^21.1.0",
+    "@capacitor/android": "^8.0.1",
+    "@capacitor/app": "^8.0.0",
+    "@capacitor/cli": "^8.0.1",
+    "@capacitor/core": "^8.0.1",
+    "@capacitor/geolocation": "^8.0.0",
+    "@capacitor/haptics": "^8.0.0",
+    "@capacitor/keyboard": "^8.0.0",
+    "leaflet": "1.9.4",
+    "rxjs": "^7.8.2",
     "tailwindcss": "latest"
   },
   "devDependencies": {

@@ -1,6 +1,6 @@
 {
-  "appId": "com.israellpgfinder.app",
+  "appId": "com.andreizav.lpgfinder",
   "appName": "Israel LPG Finder",
-  "webDir": "dist/browser",
+  "webDir": "dist",
   "bundledWebRuntime": false
 }
