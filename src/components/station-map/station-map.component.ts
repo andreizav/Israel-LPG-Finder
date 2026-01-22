@@ -84,8 +84,18 @@ export class StationMapComponent implements AfterViewInit, OnDestroy {
   }
 
   private initMap() {
-    // Center of Israel roughly
-    this.map = L.map(this.mapContainer.nativeElement).setView([31.5, 34.8], 8);
+    // Bounds for Israel (approximate with padding)
+    const southWest = L.latLng(29.3, 34.0);
+    const northEast = L.latLng(33.5, 35.9);
+    const israelBounds = L.latLngBounds(southWest, northEast);
+
+    this.map = L.map(this.mapContainer.nativeElement, {
+      center: [31.5, 34.8],
+      zoom: 8,
+      minZoom: 7,
+      maxBounds: israelBounds,
+      maxBoundsViscosity: 1.0
+    });
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: ''
