@@ -163,6 +163,25 @@ export class StationService {
     );
   }
 
+  importStations(jsonText: string): boolean {
+    try {
+      const data = JSON.parse(jsonText);
+      if (Array.isArray(data)) {
+        // Basic validation: Check for essential fields on the first few items or all
+        const isValid = data.every((item: any) => item.name && typeof item.lat === 'number' && typeof item.lng === 'number');
+
+        if (isValid) {
+          this._stations.set(data as LPGStation[]);
+          return true;
+        }
+      }
+      return false;
+    } catch (e) {
+      console.error('Failed to parse JSON', e);
+      return false;
+    }
+  }
+
   // Generate Waze link
   getWazeLink(station: LPGStation): string {
     const query = `${station.name} ${station.city_he}`;
