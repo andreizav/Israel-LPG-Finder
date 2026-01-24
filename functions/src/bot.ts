@@ -10,7 +10,7 @@ const db = admin.firestore();
 
 // CONSTANTS
 const ADMIN_IDS = [497973726]; // Replace with actual admin IDs or load from env
-const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8201318259:AAEBQNGAGVM66QdHgPd-ElFBlVQOqJIHmfc';
+const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
 
 export const bot = new Telegraf(BOT_TOKEN);
 
