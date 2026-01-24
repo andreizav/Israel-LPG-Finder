@@ -76,3 +76,9 @@ ui-debug.log
 functions/lib
 functions/node_modules
 functions/firebase-debug.log
+
+
+# Environment Variables
+.env
+src/environments/environment.ts
+functions/env.ts

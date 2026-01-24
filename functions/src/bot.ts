@@ -1,5 +1,6 @@
 import { Telegraf } from 'telegraf';
 import * as admin from 'firebase-admin';
+import { ADMIN_IDS as ENV_ADMIN_IDS, BOT_TOKEN as ENV_BOT_TOKEN } from '../env';
 
 // Initialize Firebase Admin (if not already done)
 if (!admin.apps.length) {
@@ -9,8 +10,8 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 // CONSTANTS
-const ADMIN_IDS = [497973726]; // Replace with actual admin IDs or load from env
-const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
+const ADMIN_IDS = ENV_ADMIN_IDS; // Replace with actual admin IDs or load from env
+const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || ENV_BOT_TOKEN;
 
 export const bot = new Telegraf(BOT_TOKEN);
 
