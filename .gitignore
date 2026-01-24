@@ -81,4 +81,4 @@ functions/firebase-debug.log
 # Environment Variables
 .env
 src/environments/environment.ts
-functions/env.ts
+functions/src/env.ts

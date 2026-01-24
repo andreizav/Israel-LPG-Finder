@@ -1,6 +1,6 @@
 import { Telegraf } from 'telegraf';
 import * as admin from 'firebase-admin';
-import { ADMIN_IDS as ENV_ADMIN_IDS, BOT_TOKEN as ENV_BOT_TOKEN } from '../env';
+import { ADMIN_IDS as ENV_ADMIN_IDS, BOT_TOKEN as ENV_BOT_TOKEN } from './env';
 
 // Initialize Firebase Admin (if not already done)
 if (!admin.apps.length) {
