@@ -40,7 +40,13 @@ export class StationService {
       this.isLoading.set(false);
 
       // Stop the persistent connection/heartbeat
-      await disableNetwork(this.firestore);
+      setTimeout(async () => {
+        try {
+          await disableNetwork(this.firestore);
+        } catch (e) {
+          console.warn('Network disable failed:', e);
+        }
+      }, 500);
     } catch (error) {
       console.error('Error fetching stations:', error);
       this.isLoading.set(false);
