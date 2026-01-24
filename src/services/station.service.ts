@@ -1,6 +1,6 @@
 import { Injectable, signal, computed } from '@angular/core';
 // import { Firestore, collectionData } from '@angular/fire/firestore'; // Removed unused
-import { collection, doc, setDoc, deleteDoc, query, getFirestore, onSnapshot } from 'firebase/firestore';
+import { collection, doc, setDoc, deleteDoc, query, getFirestore, getDocs } from 'firebase/firestore';
 import { LPGStation } from '../types';
 import { STATIONS_DATA } from '../data/stations.data';
 import { Observable } from 'rxjs';
@@ -30,18 +30,18 @@ export class StationService {
     this.connectToFirestore();
   }
 
-  private connectToFirestore() {
+  private async connectToFirestore() {
     const q = query(this.stationsCollection);
 
-    // Using onSnapshot for direct SDK usage without RxJS wrapper issues
-    onSnapshot(q, (snapshot) => {
+    try {
+      const snapshot = await getDocs(q);
       const data = snapshot.docs.map(doc => doc.data() as LPGStation);
       this._stations.set(data);
       this.isLoading.set(false);
-    }, (error) => {
+    } catch (error) {
       console.error('Error fetching stations:', error);
       this.isLoading.set(false);
-    });
+    }
   }
 
   // Computed: Get unique brands for the filter dropdown
