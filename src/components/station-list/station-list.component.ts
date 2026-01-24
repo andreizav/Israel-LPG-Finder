@@ -27,15 +27,7 @@ type ViewMode = 'list' | 'map';
         
         <div class="flex items-center gap-2">
           <!-- Import Button -->
-          <button 
-            (click)="toggleImportModal()" 
-            class="bg-blue-800 text-blue-300 p-2 rounded-lg hover:bg-blue-700 transition-colors" 
-            title="ייבוא נתונים"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-            </svg>
-          </button>
+          <!-- Import Button Removed -->
 
           <!-- View Toggle -->
           <div class="bg-blue-800 rounded-lg p-1 flex">
@@ -124,6 +116,15 @@ type ViewMode = 'list' | 'map';
             <div class="text-center py-10 text-gray-500">
               <p class="text-lg">לא נמצאו תחנות תואמות לחיפוש.</p>
               <button (click)="clearAll()" class="mt-4 text-blue-600 font-medium hover:underline">נקה חיפוש</button>
+              
+              @if (stationService.stations().length === 0 && !stationService.isLoading()) {
+                <div class="mt-8 pt-8 border-t border-gray-100">
+                  <p class="text-sm text-gray-400 mb-2">מסד הנתונים ריק?</p>
+                  <button (click)="stationService.seedStations()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                    אתחל נתונים ראשוניים (Seed)
+                  </button>
+                </div>
+              }
             </div>
           }
 
@@ -184,43 +185,7 @@ type ViewMode = 'list' | 'map';
 
     </main>
     
-    <!-- Import JSON Modal -->
-    @if (isImportModalOpen()) {
-      <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" (click)="toggleImportModal()">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]" (click)="$event.stopPropagation()">
-          <div class="p-4 bg-gray-50 border-b flex justify-between items-center">
-            <h3 class="font-bold text-lg text-gray-800">ייבוא נתונים (JSON)</h3>
-            <button (click)="toggleImportModal()" class="text-gray-500 hover:text-gray-700">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-          
-          <div class="p-4 flex-1 overflow-hidden flex flex-col">
-            <p class="text-sm text-gray-600 mb-2">הדבק כאן את תוכן קובץ ה-JSON:</p>
-            <textarea 
-              [formControl]="importText"
-              class="w-full flex-1 p-3 border rounded-xl font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
-              placeholder='[{"name": "Station Name", ...}]'
-            ></textarea>
-          </div>
-
-          <div class="p-4 border-t bg-gray-50 flex justify-end gap-3">
-            <button (click)="toggleImportModal()" class="px-4 py-2 text-gray-600 font-medium hover:bg-gray-200 rounded-lg transition-colors">
-              ביטול
-            </button>
-            <button 
-              (click)="importFromJsonText()" 
-              [disabled]="!importText.value"
-              class="px-6 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              ייבוא נתונים
-            </button>
-          </div>
-        </div>
-      </div>
-    }
+    <!-- Import Modal Removed -->
   `
 })
 export class StationListComponent {
@@ -257,30 +222,5 @@ export class StationListComponent {
     return brand.substring(0, 2).toUpperCase();
   }
 
-  onFileSelected(event: Event) {
-    // Removed
-  }
-
-  isImportModalOpen = signal(false);
-  importText = new FormControl('');
-
-  toggleImportModal() {
-    this.isImportModalOpen.update(v => !v);
-    if (!this.isImportModalOpen()) {
-      this.importText.setValue('');
-    }
-  }
-
-  importFromJsonText() {
-    const text = this.importText.value;
-    if (text) {
-      const success = this.stationService.importStations(text);
-      if (success) {
-        alert('הנתונים יובאו בהצלחה!');
-        this.toggleImportModal();
-      } else {
-        alert('שגיאה בייבוא הנתונים. פורמט JSON לא תקין.');
-      }
-    }
-  }
+  // Import feature removed in favor of Firestore sync
 }

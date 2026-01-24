@@ -13,6 +13,14 @@ import { StationService } from '../../services/station.service';
     <div class="relative w-full h-full">
       <div #mapContainer class="w-full h-full z-0"></div>
       
+      @if (stations().length === 0) {
+        <div class="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+           <div class="bg-white/80 backdrop-blur px-4 py-2 rounded-lg shadow-lg text-sm text-gray-600 pointer-events-auto">
+             הצגת 0 תחנות. נסה לשנות את הסינון.
+           </div>
+        </div>
+      }
+      
       <!-- Locate Me Button -->
       <button 
         (click)="locateUser()"
@@ -165,7 +173,11 @@ export class StationMapComponent implements AfterViewInit, OnDestroy {
     const bounds = L.latLngBounds([]);
 
     stations.forEach(station => {
-      if (!station.lat || !station.lng) return;
+      // Debug log for invalid coordinates
+      if (!station.lat || !station.lng) {
+        console.warn('Invalid coordinates for station:', station);
+        return;
+      }
 
       const marker = L.marker([station.lat, station.lng], {
         icon: this.createCustomIcon(station)

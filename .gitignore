@@ -65,3 +65,10 @@ keystore.properties
 # Logs and Temporary Build Files
 build_*.txt
 *.log
+
+# Firebase
+.firebaserc
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
