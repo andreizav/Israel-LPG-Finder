@@ -1,6 +1,6 @@
 import { Injectable, signal, computed } from '@angular/core';
 // import { Firestore, collectionData } from '@angular/fire/firestore'; // Removed unused
-import { collection, doc, setDoc, deleteDoc, query, getFirestore, getDocs } from 'firebase/firestore';
+import { collection, doc, setDoc, deleteDoc, query, getFirestore, getDocs, disableNetwork, enableNetwork } from 'firebase/firestore';
 import { LPGStation } from '../types';
 import { STATIONS_DATA } from '../data/stations.data';
 import { Observable } from 'rxjs';
@@ -38,6 +38,9 @@ export class StationService {
       const data = snapshot.docs.map(doc => doc.data() as LPGStation);
       this._stations.set(data);
       this.isLoading.set(false);
+
+      // Stop the persistent connection/heartbeat
+      await disableNetwork(this.firestore);
     } catch (error) {
       console.error('Error fetching stations:', error);
       this.isLoading.set(false);
@@ -86,6 +89,7 @@ export class StationService {
   }
 
   async addStation(station: LPGStation) {
+    await enableNetwork(this.firestore);
     const docId = this.generateDocId(station.name);
     try {
       await setDoc(doc(this.firestore, 'stations', docId), station);
@@ -96,6 +100,7 @@ export class StationService {
   }
 
   async updateStation(originalName: string, updatedStation: LPGStation) {
+    await enableNetwork(this.firestore);
     const originalDocId = this.generateDocId(originalName);
     const newDocId = this.generateDocId(updatedStation.name);
 
@@ -134,6 +139,7 @@ export class StationService {
 
   // Seed data to Firestore (Run once)
   async seedStations() {
+    await enableNetwork(this.firestore);
     console.log('Seeding stations...');
     const staticData = STATIONS_DATA;
     let addedCount = 0;
