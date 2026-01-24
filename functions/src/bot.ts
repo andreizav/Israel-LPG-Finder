@@ -32,40 +32,75 @@ bot.on('text', async (ctx) => {
 
     try {
         // 1. Try to parse JSON
-        const data = JSON.parse(text);
+        let parsedData = JSON.parse(text);
 
-        // Basic validation
-        if (!data.name) {
-            // If valid JSON but missing 'name', treat it as just a chat message or error?
-            // User requirement: "Expected format JSON... find document... where name matches"
-            await ctx.reply('⚠️ JSON должен содержать поле "name".');
+        // Normalize to array
+        const items = Array.isArray(parsedData) ? parsedData : [parsedData];
+
+        if (items.length === 0) {
+            await ctx.reply('⚠️ Пустой массив данных.');
             return;
         }
 
-        const stationName = data.name;
-
-        // 2. Find station in Firestore
+        const batch = db.batch();
         const stationsRef = db.collection('stations');
-        const snapshot = await stationsRef.where('name', '==', stationName).limit(1).get();
 
-        if (snapshot.empty) {
-            await ctx.reply(`⚠️ Станция с таким именем не найдена: "${stationName}"`);
-            return;
+        let updatedCount = 0;
+        const notFoundNames: string[] = [];
+        const errors: string[] = [];
+
+        // 2. Process each item
+        // We need to query for each item to find its doc ID (since we don't know it)
+        // Firestore batch has 500 limit. Assuming items.length < 500 for MVP.
+
+        const updates = items.map(async (item) => {
+            if (!item.name) {
+                errors.push(`JSON без имени: ${JSON.stringify(item)}`);
+                return;
+            }
+
+            // Find document by name
+            const snapshot = await stationsRef.where('name', '==', item.name).limit(1).get();
+
+            if (snapshot.empty) {
+                notFoundNames.push(item.name);
+                return;
+            }
+
+            const stationDoc = snapshot.docs[0];
+
+            // Prepare update data
+            const updateData = {
+                ...item,
+                last_updated: new Date().toISOString()
+            };
+
+            batch.update(stationDoc.ref, updateData);
+            updatedCount++;
+        });
+
+        await Promise.all(updates);
+
+        if (updatedCount > 0) {
+            await batch.commit();
         }
 
-        // 3. Update station
-        const stationDoc = snapshot.docs[0];
+        // 3. Send Report
+        let report = `✅ Обновлено станций: ${updatedCount}`;
 
-        // Create update object (excluding name if we want, or just merge)
-        // Add last_updated
-        const updateData = {
-            ...data,
-            last_updated: new Date().toISOString()
-        };
+        if (notFoundNames.length > 0) {
+            report += `\n\n⚠️ Не найдено (${notFoundNames.length}):\n${notFoundNames.join(', ')}`;
+        }
 
-        await stationDoc.ref.update(updateData);
+        if (errors.length > 0) {
+            report += `\n\n❌ Ошибки данных:\n${errors.join('\n')}`;
+        }
 
-        await ctx.reply(`✅ Данные обновлены для: ${stationName}`);
+        if (updatedCount === 0 && notFoundNames.length === 0 && errors.length === 0) {
+            report = '⚠️ Ничего не обновлено (непонятная ситуация).';
+        }
+
+        await ctx.reply(report);
 
     } catch (e) {
         if (e instanceof SyntaxError) {
