@@ -13,8 +13,5 @@ export const routes: Routes = [
     path: 'station/:name',
     loadComponent: () => import('./components/station-detail/station-detail.component').then(m => m.StationDetailComponent)
   },
-  {
-    path: 'edit/:name',
-    loadComponent: () => import('./components/station-form/station-form.component').then(m => m.StationFormComponent)
-  }
+
 ];

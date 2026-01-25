@@ -99,6 +99,8 @@ export class StationService {
     const docId = this.generateDocId(station.name);
     try {
       await setDoc(doc(this.firestore, 'stations', docId), station);
+      // Update local state
+      this._stations.update(stations => [...stations, station]);
     } catch (e) {
       console.error('Error adding station:', e);
       throw e;
@@ -115,9 +117,20 @@ export class StationService {
         // Name changed: delete old, create new
         await deleteDoc(doc(this.firestore, 'stations', originalDocId));
         await setDoc(doc(this.firestore, 'stations', newDocId), updatedStation);
+
+        // Update local state: remove old, add new
+        this._stations.update(stations => [
+          ...stations.filter(s => s.name !== originalName),
+          updatedStation
+        ]);
       } else {
         // Just update
         await setDoc(doc(this.firestore, 'stations', originalDocId), updatedStation, { merge: true });
+
+        // Update local state: find and replace
+        this._stations.update(stations =>
+          stations.map(s => s.name === originalName ? { ...s, ...updatedStation } : s)
+        );
       }
     } catch (e) {
       console.error('Error updating station:', e);
@@ -133,6 +146,88 @@ export class StationService {
   getWazeLink(station: LPGStation): string {
     const query = `${station.name} ${station.city_he}`;
     return `https://waze.com/ul?q=${encodeURIComponent(query)}&navigate=yes`;
+  }
+
+  async processComment(station: LPGStation, comment: string): Promise<string> {
+    await enableNetwork(this.firestore);
+
+    // 1. Always save the comment to the current station
+    const docId = this.generateDocId(station.name);
+    try {
+      await setDoc(doc(this.firestore, 'stations', docId), { comment }, { merge: true });
+
+      // Update local state for the comment
+      this._stations.update(stations =>
+        stations.map(s => s.name === station.name ? { ...s, comment } : s)
+      );
+
+    } catch (e) {
+      console.error('Error saving comment:', e);
+      return 'שגיאה בשמירת התגובה';
+    }
+
+    // 2. Try parsing as JSON for advanced operations
+    let jsonData: any;
+    try {
+      jsonData = JSON.parse(comment);
+    } catch (e) {
+      // Not JSON, just a regular comment
+      return 'התגובה נשמרה בהצלחה';
+    }
+
+    // 3. Process JSON Logic
+    let updatesCount = 0;
+    let createsCount = 0;
+
+    const dataArray = Array.isArray(jsonData) ? jsonData : [jsonData];
+    const currentStations = this.stations();
+
+    for (const item of dataArray) {
+      if (typeof item !== 'object' || item === null) continue;
+
+      // 3. Match Logic:
+      // - If Name matches -> Update (handles moving station)
+      // - If Name different BUT Location matches (approx 11m) -> Update (handles renaming station)
+      // - If Name different AND Location different -> Add New Station
+
+      // A. Try Name Match
+      let match = currentStations.find(s => s.name === item.name);
+
+      // B. Try Location Match if no Name match
+      if (!match && item.lat && item.lng) {
+        // Threshold: 0.0001 degrees is approx 11 meters.
+        // This allows for minor coordinate precision differences but treats "close enough" as the same station.
+        const epsilon = 0.0001;
+        match = currentStations.find(s =>
+          Math.abs(s.lat - item.lat) < epsilon &&
+          Math.abs(s.lng - item.lng) < epsilon
+        );
+      }
+
+      if (match) {
+        // FOUND: Update existing station
+        // Merging item data into match.
+        // If 'name' in item is different from match.name, StationService.updateStation handles the rename (delete old doc, create new).
+        this.updateStation(match.name, { ...match, ...item });
+        updatesCount++;
+      } else {
+        // Create new (ensure required fields exist)
+        if (item.name && item.lat && item.lng) {
+          // Defaults
+          const newStation: LPGStation = {
+            city_he: '',
+            city_en: '',
+            address: '',
+            brand: 'General',
+            ...item
+          };
+          this.addStation(newStation);
+          createsCount++;
+        }
+      }
+    }
+
+    return `התגובה נשמרה. ${updatesCount} תחנות עודכנו, ${createsCount} תחנות נוספו.`;
   }
 
   // Price styling helpers

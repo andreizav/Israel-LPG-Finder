@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { StationService } from '../../services/station.service';
 import { LPGStation } from '../../types';
@@ -7,7 +8,7 @@ import { LPGStation } from '../../types';
 @Component({
   selector: 'app-station-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="min-h-screen bg-white">
@@ -22,14 +23,8 @@ import { LPGStation } from '../../types';
           <h1 class="font-bold text-lg truncate text-left">פרטי תחנה</h1>
         </div>
         
-        @if (station(); as s) {
-          <a [routerLink]="['/edit', s.name]" class="text-blue-600 p-2 text-sm font-bold hover:bg-blue-50 rounded-lg transition-colors flex items-center gap-1 whitespace-nowrap">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-            </svg>
-            עריכה
-          </a>
-        }
+        
+        <!-- Edit button removed -->
       </nav>
 
       @if (station(); as s) {
@@ -102,6 +97,33 @@ import { LPGStation } from '../../types';
             </div>
           </div>
 
+          <!-- Comments Section -->
+          <div class="bg-white rounded-2xl p-6 mb-6 border border-gray-100 shadow-sm">
+            <h3 class="font-bold text-gray-900 mb-4">תגובות / עדכונים</h3>
+            
+            @if (s.comment) {
+              <div class="bg-gray-50 p-4 rounded-xl mb-4 text-sm text-gray-700 whitespace-pre-wrap">
+                {{ s.comment }}
+              </div>
+            }
+
+            <div class="space-y-3">
+              <textarea 
+                [(ngModel)]="commentText" 
+                placeholder="כתוב תגובה..."
+                class="w-full p-4 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none resize-y min-h-[100px] text-sm"
+              ></textarea>
+              
+              <button 
+                (click)="submitComment(s)"
+                [disabled]="!commentText || isSubmitting"
+                class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {{ isSubmitting ? 'שולח...' : 'שלח תגובה' }}
+              </button>
+            </div>
+          </div>
+
           <!-- Navigate Button -->
           <a [href]="stationService.getWazeLink(s)" target="_blank" class="w-full flex items-center justify-center gap-2 bg-[#33ccff] hover:bg-[#2cb5e3] text-white font-bold py-4 rounded-xl shadow-lg transition-transform active:scale-95">
              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
@@ -125,6 +147,9 @@ export class StationDetailComponent implements OnInit {
   stationService = inject(StationService);
   station = signal<LPGStation | undefined>(undefined);
 
+  commentText = '';
+  isSubmitting = false;
+
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       const name = params.get('name');
@@ -132,24 +157,43 @@ export class StationDetailComponent implements OnInit {
         // Use a computed to react to service updates
         // However, for simplicity here, we'll re-fetch when params change.
         // Better pattern: use a computed in the component that depends on the service signal
-        
+
         // Let's create an effect or just update the signal from the service
         // Since the service signal changes, we need this component to update
         this.updateStationData(name);
       }
     });
   }
-  
+
   // Re-fetch when the component initializes or params change
   updateStationData(name: string) {
-      // Because `stations` in service is a signal, we can just grab it.
-      // But we want it to be reactive if the service updates while we are looking at the detail.
-      // So let's use a computed.
-      const found = this.stationService.getStationByName(name);
-      this.station.set(found);
+    // Because `stations` in service is a signal, we can just grab it.
+    // But we want it to be reactive if the service updates while we are looking at the detail.
+    // So let's use a computed.
+    const found = this.stationService.getStationByName(name);
+    this.station.set(found);
   }
 
   getInitials(brand: string): string {
     return brand ? brand.substring(0, 2).toUpperCase() : '??';
+  }
+
+  async submitComment(station: LPGStation) {
+    if (!this.commentText.trim()) return;
+
+    this.isSubmitting = true;
+    try {
+      const result = await this.stationService.processComment(station, this.commentText);
+      alert(result);
+      this.commentText = ''; // Clear input on success
+
+      // Refresh data
+      this.updateStationData(station.name);
+    } catch (e) {
+      alert('שגיאה לא צפויה');
+      console.error(e);
+    } finally {
+      this.isSubmitting = false;
+    }
   }
 }

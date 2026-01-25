@@ -11,4 +11,5 @@ export interface LPGStation {
   source_refs?: string;
   lat: number;
   lng: number;
+  comment?: string;
 }

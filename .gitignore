@@ -82,3 +82,6 @@ functions/firebase-debug.log
 .env
 src/environments/environment.ts
 functions/src/env.ts
+
+# Capacitor Web Assets
+/android/app/src/main/assets/public
