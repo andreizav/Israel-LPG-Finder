@@ -80,7 +80,6 @@ functions/firebase-debug.log
 
 # Environment Variables
 .env
-src/environments/environment.ts
 functions/src/env.ts
 
 # Capacitor Web Assets
