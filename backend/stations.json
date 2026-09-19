@@ -1,6 +1,4 @@
-import { LPGStation } from '../types';
-
-export const STATIONS_DATA: LPGStation[] = [
+[
   {
     "name": "Alonit Eilot",
     "city_he": "אילות",
@@ -639,4 +637,4 @@ export const STATIONS_DATA: LPGStation[] = [
     "lat": 31.9619,
     "lng": 34.8042
   }
-];
+]

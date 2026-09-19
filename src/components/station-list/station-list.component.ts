@@ -117,14 +117,7 @@ type ViewMode = 'list' | 'map';
               <p class="text-lg">לא נמצאו תחנות תואמות לחיפוש.</p>
               <button (click)="clearAll()" class="mt-4 text-blue-600 font-medium hover:underline">נקה חיפוש</button>
               
-              @if (stationService.stations().length === 0 && !stationService.isLoading()) {
-                <div class="mt-8 pt-8 border-t border-gray-100">
-                  <p class="text-sm text-gray-400 mb-2">מסד הנתונים ריק?</p>
-                  <button (click)="stationService.seedStations()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
-                    אתחל נתונים ראשוניים (Seed)
-                  </button>
-                </div>
-              }
+
             </div>
           }
 

@@ -85,3 +85,7 @@ functions/src/env.ts
 
 # Capacitor Web Assets
 /android/app/src/main/assets/public
+
+# Servel / Server Preview
+.servel_preview/
+.server_preview/

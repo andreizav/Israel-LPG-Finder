@@ -183,8 +183,9 @@ export class StationDetailComponent implements OnInit {
 
     this.isSubmitting = true;
     try {
-      const result = await this.stationService.processComment(station, this.commentText);
-      alert(result);
+      const updated = { ...station, comment: this.commentText };
+      await this.stationService.updateStation(station.name, updated);
+      alert('התגובה נשמרה בהצלחה');
       this.commentText = ''; // Clear input on success
 
       // Refresh data
