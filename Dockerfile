@@ -18,7 +18,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY backend/ ./
 
 # Copy built frontend to static folder for FastAPI to serve
-COPY --from=frontend-builder /app/dist/israel-lpg-finder/browser ./static
+COPY --from=frontend-builder /app/dist ./static
 
 EXPOSE 8000
 
