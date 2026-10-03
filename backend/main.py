@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 import contextlib
+import os
 
 from database import engine, Base
 from routers import router
@@ -27,6 +30,13 @@ app.add_middleware(
 
 app.include_router(router)
 
-@app.get("/")
+@app.get("/api/health")
 def read_root():
     return {"message": "Welcome to Israel LPG Finder API"}
+
+if os.path.exists("static"):
+    app.mount("/", StaticFiles(directory="static", html=True), name="static")
+
+    @app.exception_handler(404)
+    async def not_found_handler(request, exc):
+        return FileResponse("static/index.html")
